@@ -1,0 +1,24 @@
+# Virtual Environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# SQLite
+db.sqlite3
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Static files
+staticfiles/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

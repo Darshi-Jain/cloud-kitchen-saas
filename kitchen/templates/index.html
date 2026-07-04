@@ -1,0 +1,12 @@
+<h1>Cloud Kitchen SaaS</h1>
+
+<div id="orders"></div>
+
+<script>
+fetch("/api/orders/")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("orders").innerHTML =
+      JSON.stringify(data);
+  });
+</script>
