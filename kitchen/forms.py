@@ -1,26 +1,22 @@
-from rest_framework import serializers
+from django import forms
 from .models import Kitchen, MenuItem, Order, Inventory
 
-
-class KitchenSerializer(serializers.ModelSerializer):
+class KitchenForm(forms.ModelForm):
     class Meta:
         model = Kitchen
         fields = "__all__"
 
-
-class MenuItemSerializer(serializers.ModelSerializer):
+class MenuItemForm(forms.ModelForm):
     class Meta:
         model = MenuItem
         fields = "__all__"
 
-
-class OrderSerializer(serializers.ModelSerializer):
+class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = "__all__"
 
-
-class InventorySerializer(serializers.ModelSerializer):
+class InventoryForm(forms.ModelForm):
     class Meta:
         model = Inventory
         fields = "__all__"

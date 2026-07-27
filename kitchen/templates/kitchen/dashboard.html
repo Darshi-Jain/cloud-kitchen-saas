@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cloud Kitchen SaaS Dashboard</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body{
+            background:#f4f6f9;
+        }
+
+        .sidebar{
+            min-height:100vh;
+            background:#1f2937;
+            color:white;
+        }
+
+        .sidebar h3{
+            padding-top:25px;
+        }
+
+        .sidebar a{
+            color:#d1d5db;
+            text-decoration:none;
+            display:block;
+            padding:12px;
+            border-radius:8px;
+        }
+
+        .sidebar a:hover{
+            background:#374151;
+            color:white;
+        }
+
+        .card{
+            border:none;
+            border-radius:15px;
+        }
+
+        .metric{
+            font-size:34px;
+            font-weight:bold;
+        }
+
+        .header{
+            background:white;
+            padding:20px;
+            border-radius:15px;
+            margin-bottom:25px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+<div class="row">
+
+    <!-- Sidebar -->
+
+    <div class="col-md-2 sidebar">
+
+        <h3 class="text-center">
+            🍔 KitchenOS
+        </h3>
+
+        <hr>
+
+        <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+
+        <a href="#"><i class="bi bi-shop"></i> Kitchens</a>
+
+        <a href="#"><i class="bi bi-list"></i> Menu</a>
+
+        <a href="#"><i class="bi bi-bag-check"></i> Orders</a>
+
+        <a href="#"><i class="bi bi-truck"></i> Delivery</a>
+
+        <a href="#"><i class="bi bi-graph-up"></i> Analytics</a>
+
+        <a href="/admin/"><i class="bi bi-person-lock"></i> Admin</a>
+
+        <a href="/api/"><i class="bi bi-code-slash"></i> REST API</a>
+
+    </div>
+
+    <!-- Main -->
+
+    <div class="col-md-10 p-4">
+
+        <div class="header">
+
+            <h2>
+                Cloud Kitchen SaaS Platform
+            </h2>
+
+            <p class="text-muted">
+
+                Multi-location cloud kitchen operations dashboard deployed on Google Kubernetes Engine
+
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-3">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <small>Total Kitchens</small>
+
+                        <div class="metric">
+
+                            {{ total_kitchens }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <small>Menu Items</small>
+
+                        <div class="metric">
+
+                            {{ total_menu_items }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <small>Total Orders</small>
+
+                        <div class="metric">
+
+                            {{ total_orders }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <small>Pending Orders</small>
+
+                        <div class="metric">
+
+                            {{ pending_orders }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+
+            <div class="col-md-8">
+
+                <div class="card shadow">
+
+                    <div class="card-header">
+
+                        Recent Orders
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>Order ID</th>
+
+                                <th>Kitchen</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>#1024</td>
+
+                                    <td>Downtown Kitchen</td>
+
+                                    <td>
+
+                                        <span class="badge bg-success">
+
+                                            Delivered
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td>#1025</td>
+
+                                    <td>Mission Kitchen</td>
+
+                                    <td>
+
+                                        <span class="badge bg-warning">
+
+                                            Preparing
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td>#1026</td>
+
+                                    <td>Bay Kitchen</td>
+
+                                    <td>
+
+                                        <span class="badge bg-primary">
+
+                                            Out for Delivery
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="card shadow">
+
+                    <div class="card-header">
+
+                        Deployment
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <p>
+
+                            ☁️ Platform
+
+                            <br>
+
+                            <strong>
+
+                                Google Kubernetes Engine
+
+                            </strong>
+
+                        </p>
+
+                        <p>
+
+                            📦 Container
+
+                            <br>
+
+                            <strong>
+
+                                Docker
+
+                            </strong>
+
+                        </p>
+
+                        <p>
+
+                            🔐 Registry
+
+                            <br>
+
+                            <strong>
+
+                                Artifact Registry
+
+                            </strong>
+
+                        </p>
+
+                        <p>
+
+                            🚀 Status
+
+                            <br>
+
+                            <span class="badge bg-success">
+
+                                Live
+
+                            </span>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

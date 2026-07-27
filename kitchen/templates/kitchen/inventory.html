@@ -1,0 +1,21 @@
+{% extends "kitchen/base.html" %}
+{% block content %}
+
+<h2 class="mb-3">Inventory</h2>
+
+<table class="table table-hover bg-white shadow-sm">
+    <tr>
+        <th>Kitchen</th><th>Item</th><th>Stock</th><th>Minimum</th><th>Supplier</th>
+    </tr>
+    {% for i in inventory_items %}
+    <tr>
+        <td>{{ i.kitchen.name }}</td>
+        <td>{{ i.item_name }}</td>
+        <td>{{ i.stock_quantity }}</td>
+        <td>{{ i.minimum_stock }}</td>
+        <td>{{ i.supplier }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

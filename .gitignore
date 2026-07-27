@@ -1,24 +1,51 @@
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# -----------------------------
 # Virtual Environment
+# -----------------------------
 venv/
 
-# Python
-__pycache__/
-*.pyc
-
-# SQLite
+# -----------------------------
+# SQLite Database
+# -----------------------------
 db.sqlite3
 
-# Environment
+# -----------------------------
+# Environment Variables
+# -----------------------------
 .env
 
-# VS Code
-.vscode/
-
-# Static files
+# -----------------------------
+# Django Static Files
+# -----------------------------
 staticfiles/
 
-# macOS
-.DS_Store
+# Generated Files
+orders_export.csv
 
-# Windows
+# -----------------------------
+# IDE
+# -----------------------------
+.vscode/
+
+# -----------------------------
+# Operating System Files
+# -----------------------------
+.DS_Store
 Thumbs.db
+
+# -----------------------------
+# SSH Keys
+# -----------------------------
+dmj00006
+dmj00006.pub
+
+# -----------------------------
+# Accidental Nested Repository
+# -----------------------------
+cloud-kitchen-saas/
