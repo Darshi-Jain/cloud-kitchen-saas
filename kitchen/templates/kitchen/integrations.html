@@ -1,0 +1,103 @@
+{% extends "kitchen/base.html" %}
+
+{% block title %}Integrations | KitchenOS{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4">
+    <div>
+        <h1 class="fw-bold mb-1">Integrations</h1>
+        <p class="text-muted mb-0">
+            Connect KitchenOS with delivery, payment, accounting, and communication platforms.
+        </p>
+    </div>
+
+    <div class="mt-3 mt-lg-0">
+        <span class="badge bg-success-subtle text-success px-3 py-2">
+            {{ connected_count }} of {{ total_integrations }} connected
+        </span>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for integration in integrations %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-light rounded-3 p-3">
+                            {% if integration.category == "Delivery" %}
+                                <i class="bi bi-bicycle fs-4 text-primary"></i>
+                            {% elif integration.category == "Payments" %}
+                                <i class="bi bi-credit-card fs-4 text-success"></i>
+                            {% elif integration.category == "Accounting" %}
+                                <i class="bi bi-calculator fs-4 text-warning"></i>
+                            {% else %}
+                                <i class="bi bi-chat-dots fs-4 text-info"></i>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <h5 class="fw-bold mb-1">{{ integration.name }}</h5>
+                            <span class="small text-muted">
+                                {{ integration.category }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if integration.connected %}
+                        <span class="badge bg-success-subtle text-success">
+                            Connected
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary">
+                            Not connected
+                        </span>
+                    {% endif %}
+                </div>
+
+                <p class="text-muted">
+                    {{ integration.description }}
+                </p>
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+
+                    <input type="hidden"
+                           name="integration_id"
+                           value="{{ integration.id }}">
+
+                    {% if integration.connected %}
+                        <input type="hidden" name="action" value="disconnect">
+
+                        <button type="submit"
+                                class="btn btn-outline-danger w-100">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Disconnect
+                        </button>
+                    {% else %}
+                        <input type="hidden" name="action" value="connect">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            <i class="bi bi-link-45deg me-2"></i>
+                            Connect
+                        </button>
+                    {% endif %}
+                </form>
+
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            No integrations are available.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

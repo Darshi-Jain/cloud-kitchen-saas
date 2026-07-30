@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum
+from django.http import HttpResponse
+from django.db.models import Sum, Count
 from rest_framework import viewsets
+from django.utils import timezone
+from datetime import datetime, timedelta
+from decimal import Decimal
+import csv
 
-from .models import Kitchen, MenuItem, Order, Inventory
+from .models import Kitchen, MenuItem, Order, Inventory, Integration
 from .forms import KitchenForm, MenuItemForm, OrderForm, InventoryForm
 from .serializers import (
     KitchenSerializer,
@@ -220,7 +225,286 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class InventoryViewSet(viewsets.ModelViewSet):
-
     queryset = Inventory.objects.all()
-
     serializer_class = InventorySerializer
+
+
+# ==========================================================
+# TECHNICAL OPERATIONS
+# ==========================================================
+
+def technical_operations(request):
+    context = {
+        "application_status": "Operational",
+        "database_status": "Connected",
+        "api_status": "Healthy",
+        "deployment_version": "v7",
+    }
+    return render(
+        request,
+        "kitchen/technical_operations.html",
+        context,
+    )
+
+
+
+
+
+
+def reports(request):
+    today = timezone.localdate()
+    default_start_date = today - timedelta(days=6)
+
+    start_date_text = request.GET.get(
+        "start_date",
+        default_start_date.isoformat(),
+    )
+    end_date_text = request.GET.get(
+        "end_date",
+        today.isoformat(),
+    )
+
+    try:
+        start_date = datetime.strptime(
+            start_date_text,
+            "%Y-%m-%d",
+        ).date()
+
+        end_date = datetime.strptime(
+            end_date_text,
+            "%Y-%m-%d",
+        ).date()
+
+    except ValueError:
+        start_date = default_start_date
+        end_date = today
+
+    if start_date > end_date:
+        start_date, end_date = end_date, start_date
+
+    orders = Order.objects.select_related("kitchen").filter(
+        order_date__range=(start_date, end_date)
+    )
+
+    total_orders = orders.count()
+
+    total_revenue = orders.aggregate(
+        total=Sum("total_amount")
+    )["total"] or Decimal("0")
+
+    average_order_value = (
+        total_revenue / total_orders
+        if total_orders
+        else Decimal("0")
+    )
+
+    kitchen_performance = list(
+        orders.values(
+            "kitchen__id",
+            "kitchen__name",
+        )
+        .annotate(
+            orders=Count("id"),
+            revenue=Sum("total_amount"),
+        )
+        .order_by("-revenue")
+    )
+
+    top_kitchen = (
+        kitchen_performance[0]["kitchen__name"]
+        if kitchen_performance
+        else "No data"
+    )
+
+    top_items = list(
+        orders.values("item_name")
+        .annotate(
+            orders=Count("id"),
+            quantity=Sum("quantity"),
+            revenue=Sum("total_amount"),
+        )
+        .order_by("-revenue")[:5]
+    )
+
+    date_labels = []
+    revenue_data = []
+    order_data = []
+
+    current_date = start_date
+
+    while current_date <= end_date:
+        daily_orders = orders.filter(order_date=current_date)
+
+        daily_revenue = daily_orders.aggregate(
+            total=Sum("total_amount")
+        )["total"] or Decimal("0")
+
+        date_labels.append(current_date.strftime("%d %b"))
+        revenue_data.append(float(daily_revenue))
+        order_data.append(daily_orders.count())
+
+        current_date += timedelta(days=1)
+
+    if request.GET.get("export") == "csv":
+        response = HttpResponse(
+            content_type="text/csv",
+        )
+
+        response["Content-Disposition"] = (
+            f'attachment; filename="kitchen-report-'
+            f'{start_date}-to-{end_date}.csv"'
+        )
+
+        writer = csv.writer(response)
+
+        writer.writerow([
+            "Cloud Kitchen Report",
+            f"{start_date} to {end_date}",
+        ])
+
+        writer.writerow([])
+        writer.writerow(["Summary"])
+        writer.writerow(["Total Revenue", total_revenue])
+        writer.writerow(["Total Orders", total_orders])
+        writer.writerow([
+            "Average Order Value",
+            round(average_order_value, 2),
+        ])
+        writer.writerow(["Top Kitchen", top_kitchen])
+
+        writer.writerow([])
+        writer.writerow([
+            "Order ID",
+            "Order Date",
+            "Kitchen",
+            "Customer",
+            "Item",
+            "Quantity",
+            "Status",
+            "Total Amount",
+        ])
+
+        for order in orders.order_by("-order_date", "-id"):
+            writer.writerow([
+                order.id,
+                order.order_date,
+                order.kitchen.name,
+                order.customer_name,
+                order.item_name,
+                order.quantity,
+                order.status,
+                order.total_amount,
+            ])
+
+        return response
+
+    context = {
+        "start_date": start_date.isoformat(),
+        "end_date": end_date.isoformat(),
+        "total_revenue": total_revenue,
+        "total_orders": total_orders,
+        "average_order_value": average_order_value,
+        "top_kitchen": top_kitchen,
+        "date_labels": date_labels,
+        "revenue_data": revenue_data,
+        "order_data": order_data,
+        "top_items": top_items,
+        "kitchen_performance": kitchen_performance,
+    }
+
+    return render(
+        request,
+        "kitchen/reports.html",
+        context,
+    )
+
+
+def integrations(request):
+    default_integrations = [
+        {
+            "name": "DoorDash",
+            "provider": "DoorDash",
+            "category": "Delivery",
+            "description": "Receive and manage DoorDash orders directly in KitchenOS.",
+        },
+        {
+            "name": "Uber Eats",
+            "provider": "Uber",
+            "category": "Delivery",
+            "description": "Synchronize Uber Eats orders and delivery activity.",
+        },
+        {
+            "name": "Grubhub",
+            "provider": "Grubhub",
+            "category": "Delivery",
+            "description": "Manage Grubhub orders from your central dashboard.",
+        },
+        {
+            "name": "Stripe",
+            "provider": "Stripe",
+            "category": "Payments",
+            "description": "Accept and track secure online payments.",
+        },
+        {
+            "name": "QuickBooks",
+            "provider": "Intuit",
+            "category": "Accounting",
+            "description": "Synchronize revenue and transaction data with QuickBooks.",
+        },
+        {
+            "name": "Slack",
+            "provider": "Slack",
+            "category": "Communication",
+            "description": "Send order and operational alerts to your Slack workspace.",
+        },
+    ]
+
+    for integration_data in default_integrations:
+        Integration.objects.get_or_create(
+            name=integration_data["name"],
+            defaults=integration_data,
+        )
+
+    if request.method == "POST":
+        integration_id = request.POST.get("integration_id")
+        action = request.POST.get("action")
+
+        integration = get_object_or_404(
+            Integration,
+            id=integration_id,
+        )
+
+        if action == "connect":
+            integration.connected = True
+        elif action == "disconnect":
+            integration.connected = False
+
+        integration.save()
+
+        return redirect("integrations")
+
+    integrations_list = Integration.objects.all().order_by(
+        "category",
+        "name",
+    )
+
+    context = {
+        "integrations": integrations_list,
+        "connected_count": integrations_list.filter(
+            connected=True
+        ).count(),
+        "total_integrations": integrations_list.count(),
+    }
+
+    return render(
+        request,
+        "kitchen/integrations.html",
+        context,
+    )
+
+
+def settings_page(request):
+    return render(
+        request,
+        "kitchen/settings.html",
+    )

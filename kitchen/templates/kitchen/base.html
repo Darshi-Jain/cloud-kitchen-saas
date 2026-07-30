@@ -1,101 +1,281 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>{% block title %}KitchenOS{% endblock %}</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-<title>KitchenOS</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
-<div class="d-flex">
+<div class="app-wrapper">
 
     <!-- Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
 
-    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'dashboard' %}" class="sidebar-brand">
+                <span class="brand-icon">
+                    <i class="bi bi-fire"></i>
+                </span>
 
-        <h3 class="logo">
-            🍔 KitchenOS
-        </h3>
+                <span>
+                    <span class="brand-name">KitchenOS</span>
+                    <span class="brand-subtitle">Cloud Kitchen SaaS</span>
+                </span>
+            </a>
 
-        <a href="/">
-            <i class="bi bi-speedometer2"></i> Dashboard
-        </a>
+            <button
+                class="sidebar-close d-lg-none"
+                id="sidebarClose"
+                type="button"
+                aria-label="Close sidebar"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
 
-        <a href="/api/ui/kitchens/">
-            <i class="bi bi-shop"></i> Kitchens
-        </a>
+        <div class="sidebar-section-label">
+            Operations
+        </div>
 
-        <a href="/api/ui/orders/">
-            <i class="bi bi-cart-check"></i> Orders
-        </a>
+        <nav class="sidebar-navigation">
 
-        <a href="/api/ui/menu/">
-            <i class="bi bi-card-list"></i> Menu
-        </a>
+            <a
+                href="{% url 'dashboard' %}"
+                class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+            >
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
 
-        <a href="/api/ui/inventory/">
-            <i class="bi bi-box-seam"></i> Inventory
-        </a>
+            <a
+                href="{% url 'orders_page' %}"
+                class="sidebar-link {% if request.resolver_match.url_name == 'orders_page' or request.resolver_match.url_name == 'order_create' or request.resolver_match.url_name == 'order_edit' %}active{% endif %}"
+            >
+                <i class="bi bi-bag-check"></i>
+                <span>Orders</span>
+            </a>
 
-        <a href="/admin/">
-            <i class="bi bi-gear"></i> Admin
-        </a>
+            <a
+                href="{% url 'kitchens_page' %}"
+                class="sidebar-link {% if request.resolver_match.url_name == 'kitchens_page' %}active{% endif %}"
+            >
+                <i class="bi bi-shop"></i>
+                <span>Kitchens</span>
+            </a>
 
-    </div>
+            <a
+                href="{% url 'menu_page' %}"
+                class="sidebar-link {% if request.resolver_match.url_name == 'menu_page' %}active{% endif %}"
+            >
+                <i class="bi bi-card-list"></i>
+                <span>Menu</span>
+            </a>
 
-    <!-- Main -->
-
-    <div class="content flex-grow-1">
-
-        <nav class="topbar">
-
-            <h4>Cloud Kitchen SaaS Platform</h4>
-
-            <div>
-
-                <button class="btn btn-light">
-
-                    <i class="bi bi-bell"></i>
-
-                </button>
-
-                <button class="btn btn-primary">
-
-                    Darshi
-
-                </button>
-
-            </div>
+            <a
+                href="{% url 'inventory_page' %}"
+                class="sidebar-link {% if request.resolver_match.url_name == 'inventory_page' %}active{% endif %}"
+            >
+                <i class="bi bi-box-seam"></i>
+                <span>Inventory</span>
+            </a>
 
         </nav>
 
-        <div class="container-fluid mt-4">
-
-            {% block content %}
-
-            {% endblock %}
-
+        <div class="sidebar-section-label mt-4">
+            Insights
         </div>
+
+        <nav class="sidebar-navigation">
+
+            <a href="{% url 'reports' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="{% url 'integrations' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'integrations' %}active{% endif %}">
+                <i class="bi bi-diagram-3"></i>
+                <span>Integrations</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-section-label mt-4">
+            Platform
+        </div>
+
+        <nav class="sidebar-navigation">
+
+            <a
+                href="{% url 'technical_operations' %}"
+                class="sidebar-link {% if request.resolver_match.url_name == 'technical_operations' %}active{% endif %}"
+            >
+                <i class="bi bi-cpu"></i>
+                <span>Technical Operations</span>
+            </a>
+
+            <a href="{% url 'settings_page' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'settings_page' %}active{% endif %}">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user-avatar">
+                <i class="bi bi-person"></i>
+            </div>
+
+            <div class="sidebar-user-details">
+                <span class="sidebar-user-name">Administrator</span>
+                <span class="sidebar-user-role">Platform Manager</span>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main application -->
+    <div class="app-main">
+
+        <header class="app-topbar">
+
+            <div class="d-flex align-items-center gap-3">
+                <button
+                    class="mobile-menu-button d-lg-none"
+                    id="sidebarOpen"
+                    type="button"
+                    aria-label="Open sidebar"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+                    <div class="topbar-title">
+                        {% block page_title %}Kitchen Operations{% endblock %}
+                    </div>
+
+                    <div class="topbar-subtitle">
+                        Manage kitchens, orders and daily operations
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="topbar-icon-button" type="button">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                <button class="topbar-icon-button position-relative" type="button">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="topbar-profile">
+                    <div class="topbar-avatar">
+                        DJ
+                    </div>
+
+                    <div class="d-none d-md-block">
+                        <div class="topbar-profile-name">Darshi Jain</div>
+                        <div class="topbar-profile-role">Administrator</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+        <main class="app-content">
+
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div
+                            class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                            role="alert"
+                        >
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                            ></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+        </main>
 
     </div>
 
 </div>
 
-<script src="{% static 'js/app.js' %}"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("appSidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        const openButton = document.getElementById("sidebarOpen");
+        const closeButton = document.getElementById("sidebarClose");
+
+        function openSidebar() {
+            sidebar.classList.add("show");
+            overlay.classList.add("show");
+            document.body.classList.add("sidebar-open");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+            document.body.classList.remove("sidebar-open");
+        }
+
+        if (openButton) {
+            openButton.addEventListener("click", openSidebar);
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener("click", closeSidebar);
+        }
+
+        if (overlay) {
+            overlay.addEventListener("click", closeSidebar);
+        }
+    });
+</script>
+
+{% block extra_js %}{% endblock %}
 
 </body>
-
 </html>

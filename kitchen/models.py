@@ -43,3 +43,15 @@ class Inventory(models.Model):
 
     def __str__(self):
         return self.item_name
+
+
+class Integration(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    provider = models.CharField(max_length=100)
+    category = models.CharField(max_length=50)
+    description = models.TextField(blank=True)
+    connected = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

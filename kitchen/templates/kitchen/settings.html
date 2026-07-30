@@ -1,0 +1,136 @@
+{% extends "kitchen/base.html" %}
+
+{% block title %}Settings | KitchenOS{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h1 class="fw-bold mb-1">Settings</h1>
+    <p class="text-muted mb-0">
+        Manage your business and platform preferences.
+    </p>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-12 col-xl-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 px-4 pt-4">
+                <h5 class="fw-bold mb-1">Business Profile</h5>
+                <p class="small text-muted mb-0">
+                    General information displayed across KitchenOS.
+                </p>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="mb-3">
+                    <label class="form-label">Business Name</label>
+                    <input type="text"
+                           class="form-control"
+                           value="KitchenOS Cloud Kitchens">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Administrator Email</label>
+                    <input type="email"
+                           class="form-control"
+                           value="admin@kitchenos.com">
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Currency</label>
+                        <select class="form-select">
+                            <option selected>USD ($)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Time Zone</label>
+                        <select class="form-select">
+                            <option selected>Pacific Time</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="button"
+                        class="btn btn-primary mt-4"
+                        onclick="showSavedMessage()">
+                    Save Changes
+                </button>
+
+                <span id="savedMessage"
+                      class="text-success ms-3 d-none">
+                    Settings saved.
+                </span>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-5">
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white border-0 px-4 pt-4">
+                <h5 class="fw-bold">Platform Preferences</h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="stockAlerts"
+                           checked>
+
+                    <label class="form-check-label"
+                           for="stockAlerts">
+                        Low-stock alerts
+                    </label>
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="orderAlerts"
+                           checked>
+
+                    <label class="form-check-label"
+                           for="orderAlerts">
+                        New-order notifications
+                    </label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="integrationAlerts"
+                           checked>
+
+                    <label class="form-check-label"
+                           for="integrationAlerts">
+                        Integration status alerts
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showSavedMessage() {
+    const message = document.getElementById("savedMessage");
+    message.classList.remove("d-none");
+
+    setTimeout(() => {
+        message.classList.add("d-none");
+    }, 2500);
+}
+</script>
+
+{% endblock %}

@@ -22,4 +22,14 @@ urlpatterns = [
 
     path("ui/menu/", menu_page, name="menu_page"),
     path("ui/inventory/", inventory_page, name="inventory_page"),
+    path("ui/dashboard/", dashboard, name="dashboard"),
+    path("ui/reports/", reports, name="reports"),
+    path("ui/integrations/", integrations, name="integrations"),
+    path("ui/settings/", settings_page, name="settings_page"),
+    path(
+        "ui/technical-operations/",
+        technical_operations,
+        name="technical_operations",
+    ),
 ]
+
